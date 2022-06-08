@@ -1,0 +1,30 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/06/08 17:44:03 by anruland          #+#    #+#              #
+#    Updated: 2022/06/08 17:49:29 by anruland         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME	=	philo
+CC		=	gcc
+CFLAGS	=	-Wall -Wextra -Werror
+
+SRC		=	main.c
+
+all: $(NAME)
+
+$(NAME): 
+	$(CC) $(CFLAGS) $(SRC) -o $(NAME)
+
+clean:
+	rm -f ./*.o
+
+fclean: clean
+	rm -f ./$(NAME)
+
+re:	fclean all
