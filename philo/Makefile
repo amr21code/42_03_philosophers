@@ -6,13 +6,13 @@
 #    By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 17:44:03 by anruland          #+#    #+#              #
-#    Updated: 2022/06/08 17:49:29 by anruland         ###   ########.fr        #
+#    Updated: 2022/06/09 09:39:32 by anruland         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	=	philo
 CC		=	gcc
-CFLAGS	=	-Wall -Wextra -Werror
+CFLAGS	=	-Wall -Wextra -Werror -pthread
 
 SRC		=	main.c
 

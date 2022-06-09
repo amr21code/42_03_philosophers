@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/08 19:51:32 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/09 09:40:23 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,16 @@ void	ft_putstr(char *str)
 	}
 }
 
+void	*test(void *arg)
+{
+	write(1, "test\n", 5);
+	return (arg);
+}
+
 int	main(int ac, char **av)
 {
+	pthread_t	philo;
+
 	if (ac < 5 || ac > 7)
 	{
 		ft_putstr("Usage: ");
@@ -30,4 +38,6 @@ int	main(int ac, char **av)
 		ft_putstr(" no_philos time_die(ms) time_eat(ms) time_sleep(ms");
 		ft_putstr(" [no_times_eat]\n");
 	}
+	pthread_create(&philo, NULL, test, NULL);
+	pthread_join(philo, NULL);
 }
