@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/08 17:43:18 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/10 19:19:05 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,49 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+
+typedef struct s_table
+{
+	int				no_forks;
+	int				no_philo;
+	int				time_die;
+	int				time_eat;
+	int				time_sleep;
+	int				no_times_eat;
+	int				*forks;
+	pthread_mutex_t	eat;
+	pthread_mutex_t	talk;
+}	t_table;
+
+typedef struct s_philo
+{
+	int			philo_no;
+	int			forks;
+	int			fork_l;
+	int			fork_r;
+	pthread_t	thread;
+	t_table		*data;
+}	t_philo;
+
+/* libft functions */
+int		ft_atoi(const char *str);
+char	*ft_itoa(int n);
+void	ft_bzero(void *s, size_t n);
+size_t	ft_strlen(const char *str);
+int		ft_printerror(char *errormsg);
+
+/* destructor.c */
+void	ph_destroy_single(void *arr);
+void	ph_destructor(t_philo *philo, t_table *data);
+
+/* error.c */
+int		ph_error_check(t_table *data, int ac, char **av);
+
+/* init.c */
+void	ph_data_init(t_table *data, char **av, int ac);
+t_philo	*ph_init_philos(t_table *data);
+
+/* main.c */
+void	*ph_dinner(void *arg);
 
 #endif

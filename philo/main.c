@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/09 09:40:23 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/10 19:19:28 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,41 @@ void	ft_putstr(char *str)
 	}
 }
 
-void	*test(void *arg)
+void	*ph_dinner(void *arg)
 {
-	write(1, "test\n", 5);
-	return (arg);
+	t_philo	*philo;
+	char	*nb;
+	int		size_nb;
+
+	philo = (t_philo *)arg;
+	nb = ft_itoa(philo->philo_no);
+	size_nb = ft_strlen(nb);
+	pthread_mutex_lock(&philo->data->talk);
+	write(1, nb, size_nb);
+	write(1, " test\n", 6);
+	pthread_mutex_unlock(&philo->data->talk);
+	free(nb);
+	return (0);
 }
+
+
 
 int	main(int ac, char **av)
 {
-	pthread_t	philo;
+	t_table	data;
+	t_philo	*philo;
+	int		i;
 
-	if (ac < 5 || ac > 7)
+	i = 0;
+	if (!ph_error_check(&data, ac, av))
+		return (-1);
+	philo = ph_init_philos(&data);
+	if (!philo)
+		return (ft_printerror("Error: alloc of philo failed\n"));
+	while (i < data.no_philo)
 	{
-		ft_putstr("Usage: ");
-		ft_putstr(av[0]);
-		ft_putstr(" no_philos time_die(ms) time_eat(ms) time_sleep(ms");
-		ft_putstr(" [no_times_eat]\n");
+		pthread_join(philo[i].thread, NULL);
+		i++;
 	}
-	pthread_create(&philo, NULL, test, NULL);
-	pthread_join(philo, NULL);
+	ph_destructor(philo, &data);
 }
