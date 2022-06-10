@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/10 19:19:28 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/10 20:18:33 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,21 @@ void	ft_putstr(char *str)
 
 void	*ph_dinner(void *arg)
 {
-	t_philo	*philo;
-	char	*nb;
-	int		size_nb;
+	t_philo			*philo;
+	// char			*nb;
+	int				size_nb;
+	char			*now;
 
 	philo = (t_philo *)arg;
-	nb = ft_itoa(philo->philo_no);
-	size_nb = ft_strlen(nb);
+	// nb = ft_itoa(philo->philo_no);
+	gettimeofday(&philo->time, NULL);
+	now = ft_itoa(philo->time.tv_usec - philo->data->start);
+	size_nb = ft_strlen(now);
 	pthread_mutex_lock(&philo->data->talk);
-	write(1, nb, size_nb);
+	write(1, now, size_nb);
 	write(1, " test\n", 6);
 	pthread_mutex_unlock(&philo->data->talk);
-	free(nb);
+	free(now);
 	return (0);
 }
 
@@ -52,6 +55,8 @@ int	main(int ac, char **av)
 	philo = ph_init_philos(&data);
 	if (!philo)
 		return (ft_printerror("Error: alloc of philo failed\n"));
+	gettimeofday(&data.time, NULL);
+	data.start = data.time.tv_usec;
 	while (i < data.no_philo)
 	{
 		pthread_join(philo[i].thread, NULL);

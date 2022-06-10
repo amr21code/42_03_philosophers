@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/10 19:19:05 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/10 20:12:35 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,21 @@ typedef struct s_table
 	int				time_sleep;
 	int				no_times_eat;
 	int				*forks;
+	suseconds_t		start;
+	struct timeval	time;
 	pthread_mutex_t	eat;
 	pthread_mutex_t	talk;
 }	t_table;
 
 typedef struct s_philo
 {
-	int			philo_no;
-	int			forks;
-	int			fork_l;
-	int			fork_r;
-	pthread_t	thread;
-	t_table		*data;
+	int				philo_no;
+	int				forks;
+	int				fork_l;
+	int				fork_r;
+	struct timeval	time;
+	pthread_t		thread;
+	t_table			*data;
 }	t_philo;
 
 /* libft functions */
