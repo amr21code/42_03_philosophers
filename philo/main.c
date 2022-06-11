@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 08:02:47 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/11 08:28:57 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,19 @@ void	*ph_dinner(void *arg)
 {
 	t_philo			*philo;
 	// char			*nb;
-	int				size_nb;
-	char			*now;
+	// int				size_nb;
+	// char			*now;
 
 	philo = (t_philo *)arg;
 	// nb = ft_itoa(philo->philo_no);
 	gettimeofday(&philo->time, NULL);
-	now = ft_itoa((philo->time.tv_usec / 1000) - philo->data->start);
-	size_nb = ft_strlen(now);
+	// now = ft_itoa((philo->time.tv_usec / 1000) - philo->data->start);
+	// size_nb = ft_strlen(now);
 	pthread_mutex_lock(&philo->data->talk);
-	write(1, now, size_nb);
-	write(1, " test\n", 6);
+	printf("%ld test\n", (philo->time.tv_usec / 1000) - philo->data->start);
+	// write(1, " test\n", 6);
 	pthread_mutex_unlock(&philo->data->talk);
-	free(now);
+	// free(now);
 	return (0);
 }
 
