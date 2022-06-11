@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 08:50:45 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/11 10:22:38 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ void	*ph_dinner(void *arg)
 	char			*message;
 
 	philo = (t_philo *)arg;
-	while ()
-	message = ph_message(rdied);
+	message = ph_message(rsleep);
 	gettimeofday(&time, NULL);
 	timediff = (time.tv_usec / 1000) - philo->data->start;
 	pthread_mutex_lock(&philo->data->talk);
