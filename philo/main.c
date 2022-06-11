@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 08:33:41 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/11 08:50:45 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,35 @@ void	ft_putstr(char *str)
 	}
 }
 
+char	*ph_message(int reason)
+{
+	if (reason == rfork)
+		return ("has taken a fork");
+	else if (reason == reat)
+		return ("is eating");
+	else if (reason == rsleep)
+		return ("is sleeping");
+	else if (reason == rthink)
+		return ("is thinking");
+	else
+		return ("died");
+}
+
 void	*ph_dinner(void *arg)
 {
 	t_philo			*philo;
-	// char			*nb;
-	// int				size_nb;
-	// char			*now;
 	struct timeval	time;
 	int				timediff;
+	char			*message;
 
 	philo = (t_philo *)arg;
-	// nb = ft_itoa(philo->philo_no);
+	while ()
+	message = ph_message(rdied);
 	gettimeofday(&time, NULL);
 	timediff = (time.tv_usec / 1000) - philo->data->start;
-	// now = ft_itoa((philo->time.tv_usec / 1000) - philo->data->start);
-	// size_nb = ft_strlen(now);
 	pthread_mutex_lock(&philo->data->talk);
-	printf("%d test\n", timediff);
-	// write(1, " test\n", 6);
+	printf("%d %d %s\n", timediff, philo->philo_no, message);
 	pthread_mutex_unlock(&philo->data->talk);
-	// free(now);
 	return (0);
 }
 

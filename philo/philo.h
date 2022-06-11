@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/10 20:12:35 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/11 08:46:45 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,15 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+
+enum e_reasons
+{
+	rfork = 1,
+	reat,
+	rsleep,
+	rthink,
+	rdied
+};
 
 typedef struct s_table
 {
@@ -41,7 +50,7 @@ typedef struct s_philo
 	int				forks;
 	int				fork_l;
 	int				fork_r;
-	struct timeval	time;
+	struct timeval	last_eat;
 	pthread_t		thread;
 	t_table			*data;
 }	t_philo;
