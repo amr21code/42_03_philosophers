@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 16:59:11 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/12 19:51:18 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,11 @@ void	*ph_dinner(void *arg)
 	while ((philo->last_eat - timediff) < philo->data->time_die)
 	{
 		if (timediff > (philo->last_eat + philo->data->time_eat))
+		{
+			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 			message = ph_message(rsleep, &philo->state);
+		}
 		else if (timediff > (philo->last_eat + philo->data->time_eat + philo->data->time_sleep))
 			message = ph_message(rthink, &philo->state);
 		if (philo->state == rthink || (philo->state == rreadyeat))
@@ -77,11 +81,7 @@ void	*ph_dinner(void *arg)
 				philo->no_eat++;
 			}
 			else
-			{
-				pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
-				pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 				message = ph_message(rthink, &philo->state);
-			}	
 		}
 		pthread_mutex_lock(&philo->data->talk);
 		printf("%d %d %s\n", timediff, philo->philo_no + 1, message);
