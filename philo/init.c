@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/10 19:12:38 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/11 17:00:30 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@
  */
 void	ph_data_init(t_table *data, char **av, int ac)
 {
+	int	i;
+
+	i = 0;
 	data->no_philo = ft_atoi(av[1]);
 	data->no_forks = ft_atoi(av[1]);
 	data->time_die = ft_atoi(av[2]);
@@ -29,8 +32,12 @@ void	ph_data_init(t_table *data, char **av, int ac)
 	data->time_sleep = ft_atoi(av[4]);
 	if (ac == 6)
 		data->no_times_eat = ft_atoi(av[5]);
-	data->forks = (int *)malloc(sizeof(int) * data->no_forks);
-	pthread_mutex_init(&data->eat, NULL);
+	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->no_forks);
+	while (i < data->no_forks)
+	{
+		pthread_mutex_init(&data->forks[i], NULL);
+		i++;
+	}
 	pthread_mutex_init(&data->talk, NULL);
 }
 
@@ -51,7 +58,24 @@ t_philo	*ph_init_philos(t_table *data)
 	while (i < data->no_philo)
 	{
 		philo[i].data = data;
-		philo[i].philo_no = i + 1;
+		philo[i].philo_no = i;
+		philo[i].forks = 0;
+		philo[i].fork_r = i;
+		philo[i].no_eat = 0;
+		if (i % 2 == 0)
+			philo[i].state = rreadyeat;
+		else
+			philo[i].state = rthink;
+		if (i > 0 && i < data->no_philo - 1)
+			philo[i].fork_l = &philo[i - 1].fork_r;
+		else if (i != 0)
+		{
+			philo[0].fork_l = &philo[i].fork_r;
+			philo[i].fork_l = &philo[i - 1].fork_r;
+
+		}
+		if (data->no_philo == 1)
+			philo[0].fork_l = &philo[0].fork_r;
 		pthread_create(&philo[i].thread, NULL, ph_dinner, &philo[i]);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 08:46:45 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/11 15:41:10 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ enum e_reasons
 	reat,
 	rsleep,
 	rthink,
-	rdied
+	rdied,
+	rreadyeat
 };
 
 typedef struct s_table
@@ -37,20 +38,21 @@ typedef struct s_table
 	int				time_eat;
 	int				time_sleep;
 	int				no_times_eat;
-	int				*forks;
 	suseconds_t		start;
 	struct timeval	time;
-	pthread_mutex_t	eat;
+	pthread_mutex_t	*forks;
 	pthread_mutex_t	talk;
 }	t_table;
 
 typedef struct s_philo
 {
 	int				philo_no;
+	int				state;
 	int				forks;
-	int				fork_l;
+	int				*fork_l;
 	int				fork_r;
-	struct timeval	last_eat;
+	int				last_eat;
+	int				no_eat;
 	pthread_t		thread;
 	t_table			*data;
 }	t_philo;

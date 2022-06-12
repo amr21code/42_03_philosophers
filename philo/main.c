@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 10:22:38 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/11 16:59:11 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,33 @@ void	ft_putstr(char *str)
 	}
 }
 
-char	*ph_message(int reason)
+char	*ph_message(int reason, int *state)
 {
 	if (reason == rfork)
+	{
+		*state = rfork;
 		return ("has taken a fork");
+	}
 	else if (reason == reat)
+	{
+		*state = reat;
 		return ("is eating");
+	}
 	else if (reason == rsleep)
+	{
+		*state = rsleep;
 		return ("is sleeping");
+	}
 	else if (reason == rthink)
+	{
+		*state = rthink;
 		return ("is thinking");
+	}
 	else
+	{
+		*state = rdied;
 		return ("died");
+	}
 }
 
 void	*ph_dinner(void *arg)
@@ -43,12 +58,38 @@ void	*ph_dinner(void *arg)
 	char			*message;
 
 	philo = (t_philo *)arg;
-	message = ph_message(rsleep);
 	gettimeofday(&time, NULL);
 	timediff = (time.tv_usec / 1000) - philo->data->start;
-	pthread_mutex_lock(&philo->data->talk);
-	printf("%d %d %s\n", timediff, philo->philo_no, message);
-	pthread_mutex_unlock(&philo->data->talk);
+	while ((philo->last_eat - timediff) < philo->data->time_die)
+	{
+		if (timediff > (philo->last_eat + philo->data->time_eat))
+			message = ph_message(rsleep, &philo->state);
+		else if (timediff > (philo->last_eat + philo->data->time_eat + philo->data->time_sleep))
+			message = ph_message(rthink, &philo->state);
+		if (philo->state == rthink || (philo->state == rreadyeat))
+		{
+			if (!pthread_mutex_lock(&philo->data->forks[philo->fork_r])
+				&& !pthread_mutex_lock(&philo->data->forks[*(philo->fork_l)]))
+			{
+				message = ph_message(reat, &philo->state);
+				gettimeofday(&time, NULL);
+				philo->last_eat = (time.tv_usec / 1000) - philo->data->start;
+				philo->no_eat++;
+			}
+			else
+			{
+				pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+				pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+				message = ph_message(rthink, &philo->state);
+			}	
+		}
+		pthread_mutex_lock(&philo->data->talk);
+		printf("%d %d %s\n", timediff, philo->philo_no + 1, message);
+		pthread_mutex_unlock(&philo->data->talk);
+		sleep(1);
+		gettimeofday(&time, NULL);
+		timediff = (time.tv_usec / 1000) - philo->data->start;
+	}
 	return (0);
 }
 
