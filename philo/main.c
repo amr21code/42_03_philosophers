@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 10:29:35 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 11:13:03 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,9 @@ char	*ph_message(int reason, int *state)
 void	ph_talk(t_philo *philo, int time, char *message)
 {
 	pthread_mutex_lock(&philo->data->talk);
-	printf("%d %d %s - last eat %d\n", time, philo->philo_no + 1, message, philo->last_eat);
+	if (philo->data->debug)
+		printf("last eat %d - ", philo->last_eat);
+	printf("%d %d %s\n", time, philo->philo_no + 1, message);
 	pthread_mutex_unlock(&philo->data->talk);
 }
 
@@ -75,6 +77,11 @@ void	*ph_dinner(void *arg)
 	time = ph_get_current_time(philo->data->start);
 	while ((philo->last_eat - time) < philo->data->time_die)
 	{
+		if (philo->state != rthink && time > (philo->last_eat + philo->data->time_cycle))
+		{
+			message = ph_message(rthink, &philo->state);
+			time = ph_get_current_time(philo->data->start);
+		}
 		if (philo->state != rsleep && time > (philo->last_eat + philo->data->time_eat))
 		{
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
@@ -82,18 +89,18 @@ void	*ph_dinner(void *arg)
 			time = ph_get_current_time(philo->data->start);
 			message = ph_message(rsleep, &philo->state);
 		}
-		else if (philo->state != rthink && time > (philo->last_eat + philo->data->time_sleep))
-		{
-			message = ph_message(rthink, &philo->state);
-			time = ph_get_current_time(philo->data->start);
-		}
 		if (philo->state == rthink || (philo->state == rreadyeat))
 		{
 			if (!pthread_mutex_lock(&philo->data->forks[philo->fork_r]))
 			{
-
+				time = ph_get_current_time(philo->data->start);
+				message = ph_message(rfork, &philo->state);
+				ph_talk(philo, time, message);
 				if (!pthread_mutex_lock(&philo->data->forks[*(philo->fork_l)]))
 				{
+					time = ph_get_current_time(philo->data->start);
+					message = ph_message(rfork, &philo->state);
+					ph_talk(philo, time, message);
 					message = ph_message(reat, &philo->state);
 					time = ph_get_current_time(philo->data->start);
 					philo->last_eat = time;
@@ -108,7 +115,7 @@ void	*ph_dinner(void *arg)
 		}
 		if (message)
 		{
-
+			ph_talk(philo, time, message);
 			message = NULL;
 		}
 		// usleep(100000);

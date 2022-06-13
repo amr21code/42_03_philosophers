@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 09:35:56 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 10:41:43 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_table
 	struct timeval	time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	talk;
+	int				debug;
 }	t_table;
 
 typedef struct s_philo
