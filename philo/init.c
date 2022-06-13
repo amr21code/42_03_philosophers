@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 10:43:53 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 11:48:04 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ t_philo	*ph_init_philos(t_table *data)
 		if (i % 2 == 0)
 			philo[i].state = rreadyeat;
 		else
-			philo[i].state = rthink;
+			philo[i].state = 0;
 		if (i > 0 && i < data->no_philo - 1)
 			philo[i].fork_l = &philo[i - 1].fork_r;
 		else if (i != 0)

@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 11:13:03 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 11:58:45 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*ph_message(int reason, int *state)
 {
 	if (reason == rfork)
 	{
-		*state = rfork;
+		// *state = rfork;
 		return ("has taken a fork");
 	}
 	else if (reason == reat)
@@ -67,6 +67,22 @@ int	ph_get_current_time(long start)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000 - start);
 }
 
+int	ph_check_state(t_philo *philo)
+{
+	if ((time > (philo->last_eat + philo->data->time_cycle)
+			&& philo->state == rsleep)
+		|| !philo->state
+		|| philo->state == rreadyeat)
+		return (rthink);
+	else if (philo->state != rsleep
+		&& time > (philo->last_eat + philo->data->time_eat)
+		&& time < (philo->last_eat + philo->data->time_cycle))
+		return (rsleep);
+	else if (philo->state == rthink || (philo->state == rreadyeat))
+		return (reat);
+	return (0);
+}
+
 void	*ph_dinner(void *arg)
 {
 	t_philo			*philo;
@@ -77,17 +93,22 @@ void	*ph_dinner(void *arg)
 	time = ph_get_current_time(philo->data->start);
 	while ((philo->last_eat - time) < philo->data->time_die)
 	{
-		if (philo->state != rthink && time > (philo->last_eat + philo->data->time_cycle))
+		if ((time > (philo->last_eat + philo->data->time_cycle)
+			&& philo->state == rsleep) || !philo->state || philo->state == rreadyeat)
 		{
 			message = ph_message(rthink, &philo->state);
 			time = ph_get_current_time(philo->data->start);
+			ph_talk(philo, time, message);
 		}
-		if (philo->state != rsleep && time > (philo->last_eat + philo->data->time_eat))
+		if (philo->state != rsleep
+			&& time > (philo->last_eat + philo->data->time_eat)
+			&& time < (philo->last_eat + philo->data->time_cycle))
 		{
+			time = ph_get_current_time(philo->data->start);
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-			time = ph_get_current_time(philo->data->start);
 			message = ph_message(rsleep, &philo->state);
+			ph_talk(philo, time, message);
 		}
 		if (philo->state == rthink || (philo->state == rreadyeat))
 		{
@@ -103,22 +124,12 @@ void	*ph_dinner(void *arg)
 					ph_talk(philo, time, message);
 					message = ph_message(reat, &philo->state);
 					time = ph_get_current_time(philo->data->start);
+					ph_talk(philo, time, message);
 					philo->last_eat = time;
 					philo->no_eat++;
 				}
 			}
-			else
-			{
-				message = ph_message(rthink, &philo->state);
-				time = ph_get_current_time(philo->data->start);
-			}
 		}
-		if (message)
-		{
-			ph_talk(philo, time, message);
-			message = NULL;
-		}
-		// usleep(100000);
 		time = ph_get_current_time(philo->data->start);
 		if (philo->data->no_times_eat >= 0 && philo->no_eat >= philo->data->no_times_eat)
 		{
@@ -130,9 +141,7 @@ void	*ph_dinner(void *arg)
 	}
 	time = ph_get_current_time(philo->data->start);
 	message = ph_message(rdied, &philo->state);
-	pthread_mutex_lock(&philo->data->talk);
-	printf("%d %d %s - last eat %d\n", time, philo->philo_no + 1, message, philo->last_eat);
-	pthread_mutex_unlock(&philo->data->talk);
+	ph_talk(philo, time, message);
 	return (0);
 }
 
