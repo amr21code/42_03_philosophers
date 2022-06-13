@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 11:48:04 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 12:07:44 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	ph_data_init(t_table *data, char **av, int ac)
 	data->time_eat = ft_atoi(av[3]);
 	data->time_sleep = ft_atoi(av[4]);
 	data->time_cycle = data->time_eat + data->time_sleep;
+	data->died = 0;
 	data->debug = 0;
 	if (ac == 6 && av[5][0] != '-')
 		data->no_times_eat = ft_atoi(av[5]);
