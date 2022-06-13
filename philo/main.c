@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/12 19:51:18 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 10:29:35 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,46 +50,82 @@ char	*ph_message(int reason, int *state)
 	}
 }
 
+void	ph_talk(t_philo *philo, int time, char *message)
+{
+	pthread_mutex_lock(&philo->data->talk);
+	printf("%d %d %s - last eat %d\n", time, philo->philo_no + 1, message, philo->last_eat);
+	pthread_mutex_unlock(&philo->data->talk);
+}
+
+int	ph_get_current_time(long start)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000 - start);
+}
+
 void	*ph_dinner(void *arg)
 {
 	t_philo			*philo;
-	struct timeval	time;
-	int				timediff;
+	int				time;
 	char			*message;
 
 	philo = (t_philo *)arg;
-	gettimeofday(&time, NULL);
-	timediff = (time.tv_usec / 1000) - philo->data->start;
-	while ((philo->last_eat - timediff) < philo->data->time_die)
+	time = ph_get_current_time(philo->data->start);
+	while ((philo->last_eat - time) < philo->data->time_die)
 	{
-		if (timediff > (philo->last_eat + philo->data->time_eat))
+		if (philo->state != rsleep && time > (philo->last_eat + philo->data->time_eat))
 		{
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+			time = ph_get_current_time(philo->data->start);
 			message = ph_message(rsleep, &philo->state);
 		}
-		else if (timediff > (philo->last_eat + philo->data->time_eat + philo->data->time_sleep))
+		else if (philo->state != rthink && time > (philo->last_eat + philo->data->time_sleep))
+		{
 			message = ph_message(rthink, &philo->state);
+			time = ph_get_current_time(philo->data->start);
+		}
 		if (philo->state == rthink || (philo->state == rreadyeat))
 		{
-			if (!pthread_mutex_lock(&philo->data->forks[philo->fork_r])
-				&& !pthread_mutex_lock(&philo->data->forks[*(philo->fork_l)]))
+			if (!pthread_mutex_lock(&philo->data->forks[philo->fork_r]))
 			{
-				message = ph_message(reat, &philo->state);
-				gettimeofday(&time, NULL);
-				philo->last_eat = (time.tv_usec / 1000) - philo->data->start;
-				philo->no_eat++;
+
+				if (!pthread_mutex_lock(&philo->data->forks[*(philo->fork_l)]))
+				{
+					message = ph_message(reat, &philo->state);
+					time = ph_get_current_time(philo->data->start);
+					philo->last_eat = time;
+					philo->no_eat++;
+				}
 			}
 			else
+			{
 				message = ph_message(rthink, &philo->state);
+				time = ph_get_current_time(philo->data->start);
+			}
 		}
-		pthread_mutex_lock(&philo->data->talk);
-		printf("%d %d %s\n", timediff, philo->philo_no + 1, message);
-		pthread_mutex_unlock(&philo->data->talk);
-		sleep(1);
-		gettimeofday(&time, NULL);
-		timediff = (time.tv_usec / 1000) - philo->data->start;
+		if (message)
+		{
+
+			message = NULL;
+		}
+		// usleep(100000);
+		time = ph_get_current_time(philo->data->start);
+		if (philo->data->no_times_eat >= 0 && philo->no_eat >= philo->data->no_times_eat)
+		{
+			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+			pthread_mutex_unlock(&philo->data->talk);
+			return (0);
+		}
 	}
+	time = ph_get_current_time(philo->data->start);
+	message = ph_message(rdied, &philo->state);
+	pthread_mutex_lock(&philo->data->talk);
+	printf("%d %d %s - last eat %d\n", time, philo->philo_no + 1, message, philo->last_eat);
+	pthread_mutex_unlock(&philo->data->talk);
 	return (0);
 }
 
@@ -106,7 +142,7 @@ int	main(int ac, char **av)
 	if (!philo)
 		return (ft_printerror("Error: alloc of philo failed\n"));
 	gettimeofday(&data.time, NULL);
-	data.start = data.time.tv_usec / 1000;
+	data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
 	while (i < data.no_philo)
 	{
 		pthread_join(philo[i].thread, NULL);

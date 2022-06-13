@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 15:41:10 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 09:35:56 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ typedef struct s_table
 	int				time_eat;
 	int				time_sleep;
 	int				no_times_eat;
-	suseconds_t		start;
+	int				time_cycle;
+	long			start;
 	struct timeval	time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	talk;

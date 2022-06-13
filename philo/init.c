@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/11 17:00:30 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/13 10:10:30 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,11 @@ void	ph_data_init(t_table *data, char **av, int ac)
 	data->time_die = ft_atoi(av[2]);
 	data->time_eat = ft_atoi(av[3]);
 	data->time_sleep = ft_atoi(av[4]);
+	data->time_cycle = data->time_eat + data->time_sleep;
 	if (ac == 6)
 		data->no_times_eat = ft_atoi(av[5]);
+	else
+		data->no_times_eat = -1;
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->no_forks);
 	while (i < data->no_forks)
 	{
