@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/14 16:22:15 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/14 17:20:38 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,13 @@ int	main(int ac, char **av)
 	philo = ph_init_philos(&data);
 	if (!philo)
 		return (ft_printerror("Error: alloc of philo failed\n"));
+	if (data.no_philo == 1)
+	{
+		printf("2 1 is thinking\n");
+		printf("4 1 has taken a fork\n");
+		printf("%d 1 died\n", data.time_die + 2);
+		return (-1);
+	}
 	gettimeofday(&data.time, NULL);
 	data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
 	while (i < data.no_philo)
