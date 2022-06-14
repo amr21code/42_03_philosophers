@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 12:07:27 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/14 16:13:48 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ enum e_reasons
 	rsleep,
 	rthink,
 	rdied,
-	rreadyeat
 };
 
 typedef struct s_table
@@ -77,6 +76,13 @@ int		ph_error_check(t_table *data, int ac, char **av);
 /* init.c */
 void	ph_data_init(t_table *data, char **av, int ac);
 t_philo	*ph_init_philos(t_table *data);
+
+/* ph_helper1.c */
+char	*ph_message(int reason, int *state);
+int		ph_talk(t_philo *philo, int reason);
+int		ph_get_current_time(long start);
+int		ph_check_state(t_philo *philo, int time);
+int		ph_check_death(t_philo *philo);
 
 /* main.c */
 void	*ph_dinner(void *arg);

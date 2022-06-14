@@ -6,91 +6,46 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 12:54:08 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/14 16:22:15 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_putstr(char *str)
+void	ph_start_eating(t_philo *philo)
 {
-	while (*str)
-	{
-		write(1, str, 1);
-		str++;
-	}
-}
-
-char	*ph_message(int reason, int *state)
-{
-	if (reason == rfork)
-	{
-		// *state = rfork;
-		return ("has taken a fork");
-	}
-	else if (reason == reat)
-	{
-		*state = reat;
-		return ("is eating");
-	}
-	else if (reason == rsleep)
-	{
-		*state = rsleep;
-		return ("is sleeping");
-	}
-	else if (reason == rthink)
-	{
-		*state = rthink;
-		return ("is thinking");
-	}
-	else
-	{
-		*state = rdied;
-		return ("died");
-	}
-}
-
-void	ph_talk(t_philo *philo, int time, char *message)
-{
-	pthread_mutex_lock(&philo->data->talk);
-	if (philo->data->debug)
-		printf("last eat %d - ", philo->last_eat);
-	printf("%d %d %s\n", time, philo->philo_no + 1, message);
-	pthread_mutex_unlock(&philo->data->talk);
-}
-
-int	ph_get_current_time(long start)
-{
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return (time.tv_sec * 1000 + time.tv_usec / 1000 - start);
-}
-
-int	ph_check_state(t_philo *philo, int time)
-{
-	if ((time > (philo->last_eat + philo->data->time_cycle)
-			&& philo->state == rsleep)
-		|| !philo->state
-		|| philo->state == rreadyeat)
-		return (rthink);
-	else if (philo->state != rsleep
-		&& time > (philo->last_eat + philo->data->time_eat)
-		&& time < (philo->last_eat + philo->data->time_cycle))
-		return (rsleep);
-	else if (philo->state == rthink || (philo->state == rreadyeat))
-		return (reat);
-	return (0);
-}
-
-int	ph_check_death(t_philo *philo)
-{
+	int	fork1;
+	int	fork2;
 	int	time;
 
-	time = ph_get_current_time(philo->data->start);
-	if (time > philo->last_eat + philo->data->time_die)
+	fork1 = philo->fork_r;
+	fork2 = *(philo->fork_l);
+	if (philo->philo_no % 2 == 0)
 	{
-		philo->data->died = philo->philo_no + 1;
+		fork1 = *(philo->fork_l);
+		fork2 = philo->fork_r;
+	}
+	if (!pthread_mutex_lock(&philo->data->forks[fork1]))
+	{
+		ph_talk(philo, rfork);
+		if (!pthread_mutex_lock(&philo->data->forks[fork2]))
+		{
+			ph_talk(philo, rfork);
+			time = ph_talk(philo, reat);
+			philo->last_eat = time;
+			philo->no_eat++;
+		}
+	}
+}
+
+int	ph_check_meal_count(t_philo *philo)
+{
+	if (philo->data->no_times_eat >= 0
+		&& philo->no_eat >= philo->data->no_times_eat)
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+		pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+		pthread_mutex_unlock(&philo->data->talk);
 		return (1);
 	}
 	return (0);
@@ -100,65 +55,29 @@ void	*ph_dinner(void *arg)
 {
 	t_philo			*philo;
 	int				time;
-	char			*message;
 
 	philo = (t_philo *)arg;
 	time = ph_get_current_time(philo->data->start);
 	while (!philo->data->died)
 	{
+		ph_check_death(philo);
 		if (ph_check_state(philo, time) == rthink)
-		{
-			message = ph_message(rthink, &philo->state);
-			time = ph_get_current_time(philo->data->start);
-			ph_talk(philo, time, message);
-		}
+			ph_talk(philo, rthink);
 		if (ph_check_state(philo, time) == rsleep)
 		{
-			time = ph_get_current_time(philo->data->start);
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-			message = ph_message(rsleep, &philo->state);
-			ph_talk(philo, time, message);
+			ph_talk(philo, rsleep);
 		}
 		if (ph_check_state(philo, time) == reat)
-		{
-			if (!pthread_mutex_lock(&philo->data->forks[philo->fork_r]))
-			{
-				if (ph_check_death(philo))
-					break ;
-				time = ph_get_current_time(philo->data->start);
-				message = ph_message(rfork, &philo->state);
-				ph_talk(philo, time, message);
-				if (!pthread_mutex_lock(&philo->data->forks[*(philo->fork_l)]))
-				{
-					if (ph_check_death(philo))
-						break ;
-					time = ph_get_current_time(philo->data->start);
-					message = ph_message(rfork, &philo->state);
-					ph_talk(philo, time, message);
-					message = ph_message(reat, &philo->state);
-					time = ph_get_current_time(philo->data->start);
-					ph_talk(philo, time, message);
-					philo->last_eat = time;
-					philo->no_eat++;
-				}
-			}
-		}
+			ph_start_eating(philo);
 		time = ph_get_current_time(philo->data->start);
-		if (philo->data->no_times_eat >= 0 && philo->no_eat >= philo->data->no_times_eat)
-		{
-			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
-			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-			pthread_mutex_unlock(&philo->data->talk);
+		if (ph_check_meal_count(philo))
 			return (0);
-		}
+		ph_check_death(philo);
 	}
 	if (philo->philo_no + 1 == philo->data->died)
-	{
-		time = ph_get_current_time(philo->data->start);
-		message = ph_message(rdied, &philo->state);
-		ph_talk(philo, time, message);
-	}
+		ph_talk(philo, rdied);
 	return (0);
 }
 
