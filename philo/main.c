@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 18:38:55 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 18:40:50 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,8 @@ int	main(int ac, char **av)
 		ph_destructor(philo, &data);
 		return (0);
 	}
-	gettimeofday(&data.time, NULL);
-	data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
+	// gettimeofday(&data.time, NULL);
+	// data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
 	while (i < data.no_philo)
 	{
 		pthread_join(philo[i].thread, NULL);
