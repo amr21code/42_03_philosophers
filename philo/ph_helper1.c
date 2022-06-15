@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/14 17:37:33 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 17:50:14 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ int	ph_talk(t_philo *philo, int reason)
 	int		time;
 	char	*message;
 
+	time = ph_get_current_time(philo->data->start);
 	if (!philo->data->died || reason == rdied)
 	{
 		message = ph_message(reason, &philo->state);
-		time = ph_get_current_time(philo->data->start);
 		if (!philo->data->died || reason == rdied)
 		{
 			pthread_mutex_lock(&philo->data->talk);
