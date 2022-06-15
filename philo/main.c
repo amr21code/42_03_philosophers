@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 17:58:49 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 18:34:10 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,28 +54,26 @@ int	ph_check_meal_count(t_philo *philo)
 void	*ph_dinner(void *arg)
 {
 	t_philo			*philo;
-	int				time;
 
 	philo = (t_philo *)arg;
-	time = ph_get_current_time(philo->data->start);
 	while (!philo->data->died)
 	{
-		// ph_check_death(philo);
-		if (ph_check_state(philo, time) == rthink)
+		if (ph_check_state(philo) == rthink)
 			ph_talk(philo, rthink);
-		if (ph_check_state(philo, time) == rsleep)
+		if (ph_check_state(philo) == rsleep)
 		{
 			ph_talk(philo, rsleep);
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 		}
-		if (ph_check_state(philo, time) == reat)
+		if (ph_check_state(philo) == reat)
 			ph_start_eating(philo);
-		time = ph_get_current_time(philo->data->start);
 		if (ph_check_meal_count(philo))
 			return (0);
 		ph_check_death(philo);
 	}
+	pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+	pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 	if (philo->philo_no + 1 == philo->data->died)
 		ph_talk(philo, rdied);
 	return (0);
@@ -92,8 +90,11 @@ int	main(int ac, char **av)
 		return (-1);
 	data.start = 0;
 	philo = ph_init_philos(&data);
-	// if (!philo)
-	// 	return (ft_printerror("Error: alloc of philo failed\n"));
+	if (!philo)
+	{
+		ph_destructor(philo, &data);
+		return (ft_printerror("Error: alloc of philo failed\n"));
+	}
 	if (data.no_philo == 1)
 	{
 		printf("2 1 is thinking\n");

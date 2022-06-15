@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/14 16:13:48 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 18:20:52 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_philo	*ph_init_philos(t_table *data);
 char	*ph_message(int reason, int *state);
 int		ph_talk(t_philo *philo, int reason);
 int		ph_get_current_time(long start);
-int		ph_check_state(t_philo *philo, int time);
+int		ph_check_state(t_philo *philo);
 int		ph_check_death(t_philo *philo);
 
 /* main.c */

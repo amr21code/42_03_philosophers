@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 17:55:47 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 18:21:10 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,11 @@ int	ph_get_current_time(long start)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000 - start);
 }
 
-int	ph_check_state(t_philo *philo, int time)
+int	ph_check_state(t_philo *philo)
 {
+	int	time;
+
+	time = ph_get_current_time(philo->data->start);
 	if ((time > (philo->last_eat + philo->data->time_cycle)
 			&& philo->state == rsleep)
 		|| !philo->state)
