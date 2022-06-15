@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 17:39:15 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 17:58:49 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	*ph_dinner(void *arg)
 	time = ph_get_current_time(philo->data->start);
 	while (!philo->data->died)
 	{
-		ph_check_death(philo);
+		// ph_check_death(philo);
 		if (ph_check_state(philo, time) == rthink)
 			ph_talk(philo, rthink);
 		if (ph_check_state(philo, time) == rsleep)
