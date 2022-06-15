@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/14 16:14:51 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 17:39:37 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,11 @@ t_philo	*ph_init_philos(t_table *data)
 	t_philo	*philo;
 
 	i = 0;
-	philo = (t_philo *)malloc(sizeof(t_philo) * data->no_philo);
-	while (i < data->no_philo)
+	if (data->no_philo > 1)
+		philo = (t_philo *)malloc(sizeof(t_philo) * data->no_philo);
+	else
+		philo = NULL;
+	while (data->no_philo > 1 && i < data->no_philo)
 	{
 		philo[i].data = data;
 		philo[i].philo_no = i;
@@ -70,6 +73,7 @@ t_philo	*ph_init_philos(t_table *data)
 		philo[i].fork_r = i;
 		philo[i].no_eat = 0;
 		philo[i].state = 0;
+		philo[i].last_eat = 0;
 		if (i > 0 && i < data->no_philo - 1)
 			philo[i].fork_l = &philo[i - 1].fork_r;
 		else if (i != 0)

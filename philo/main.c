@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/14 17:20:38 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/15 17:39:15 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ void	*ph_dinner(void *arg)
 			ph_talk(philo, rthink);
 		if (ph_check_state(philo, time) == rsleep)
 		{
+			ph_talk(philo, rsleep);
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-			ph_talk(philo, rsleep);
 		}
 		if (ph_check_state(philo, time) == reat)
 			ph_start_eating(philo);
@@ -90,15 +90,17 @@ int	main(int ac, char **av)
 	i = 0;
 	if (!ph_error_check(&data, ac, av))
 		return (-1);
+	data.start = 0;
 	philo = ph_init_philos(&data);
-	if (!philo)
-		return (ft_printerror("Error: alloc of philo failed\n"));
+	// if (!philo)
+	// 	return (ft_printerror("Error: alloc of philo failed\n"));
 	if (data.no_philo == 1)
 	{
 		printf("2 1 is thinking\n");
 		printf("4 1 has taken a fork\n");
 		printf("%d 1 died\n", data.time_die + 2);
-		return (-1);
+		ph_destructor(philo, &data);
+		return (0);
 	}
 	gettimeofday(&data.time, NULL);
 	data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
