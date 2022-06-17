@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:14:11 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 11:24:10 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 13:15:39 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,6 @@ void	ph_destructor(t_philo *philo, t_table *data)
 	}
 	pthread_mutex_destroy(&data->talk);
 	ph_destroy_single(data->forks);
+	ph_destroy_single(data);
 	ph_destroy_single(philo);
 }

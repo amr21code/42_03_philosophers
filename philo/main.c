@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 12:19:58 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 14:13:08 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	ph_start_eating(t_philo *philo)
 
 	fork1 = philo->fork_r;
 	fork2 = *(philo->fork_l);
+	// printf("philo %d - took f1 %d and f2 %d\n", philo->philo_no + 1, fork1, fork2);
 	if (philo->philo_no % 2 == 0)
 	{
 		fork1 = *(philo->fork_l);
@@ -58,16 +59,20 @@ void	*ph_death(void *arg)
 	t_philo	*philo;
 	t_table	*data;
 	int		i;
+	int		times_ate;
 
+	times_ate = 0;
 	philo = (t_philo *)arg;
-	data = philo->data;
-	while (!philo->data->died)
+	data = philo[0].data;
+	while (!data->died && times_ate < data->no_times_eat)
 	{
 		i = 0;
-		while (i < data->no_philo && !philo->data->died)
+		while (i < data->no_philo && !data->died)
 		{
 			if (ph_check_death(&philo[i]))
 				ph_talk(&philo[i], rdied);
+			if (data->no_times_eat > 0 && philo[i].no_eat >= data->no_times_eat)
+				times_ate++;
 			i++;
 		}
 	}
@@ -81,7 +86,7 @@ void	*ph_dinner(void *arg)
 	philo = (t_philo *)arg;
 	while (!philo->data->died)
 	{
-		if (!ph_check_death(philo) && ph_check_state(philo) == rthink)
+		if (ph_check_state(philo) == rthink)
 			ph_talk(philo, rthink);
 		if (ph_check_state(philo) == rsleep)
 		{
@@ -89,49 +94,51 @@ void	*ph_dinner(void *arg)
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 		}
-		if (!ph_check_death(philo) && ph_check_state(philo) == reat)
+		if (ph_check_state(philo) == reat)
 			ph_start_eating(philo);
 		if (ph_check_meal_count(philo))
 			return (0);
-		ph_check_death(philo);
+		// ph_check_death(philo);
 	}
 	pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 	pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-	if (philo->philo_no + 1 == philo->data->died)
-		ph_talk(philo, rdied);
+	// if (philo->philo_no + 1 == philo->data->died)
+	// 	ph_talk(philo, rdied);
 	return (0);
 }
 
 int	main(int ac, char **av)
 {
-	t_table	data;
+	t_table	*data;
 	t_philo	*philo;
 	int		i;
 
 	i = 0;
-	if (!ph_error_check(&data, ac, av))
+	data = (t_table *)malloc(sizeof(t_table));
+	if (!ph_error_check(data, ac, av))
 		return (-1);
-	gettimeofday(&data.time, NULL);
-	data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
-	philo = ph_init_philos(&data);
-	if (!philo)
+	gettimeofday(&data->time, NULL);
+	data->start = data->time.tv_sec * 1000 + data->time.tv_usec / 1000;
+	philo = ph_init_philos(data);
+	if (data->no_philo > 1 && !philo)
 	{
-		ph_destructor(philo, &data);
+		ph_destructor(philo, data);
 		return (ft_printerror("Error: alloc of philo failed\n"));
 	}
-	if (data.no_philo == 1)
+	if (data->no_philo == 1)
 	{
 		printf("2 1 is thinking\n");
 		printf("4 1 has taken a fork\n");
-		printf("%d 1 died\n", data.time_die + 2);
-		ph_destructor(philo, &data);
+		printf("%d 1 died\n", data->time_die + 2);
+		ph_destructor(philo, data);
 		return (0);
 	}
-	while (i < data.no_philo)
+	ph_init_death(data, philo);
+	pthread_join(data->death, NULL);
+	while (i < data->no_philo)
 	{
 		pthread_join(philo[i].thread, NULL);
-		pthread_join(data.death, NULL);
 		i++;
 	}
-	ph_destructor(philo, &data);
+	ph_destructor(philo, data);
 }
