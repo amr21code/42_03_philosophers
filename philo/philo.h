@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 11:25:09 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 15:21:02 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_philo
 	int				fork_r;
 	int				last_eat;
 	int				no_eat;
+	pthread_mutex_t	no_eat_mutex;
 	pthread_t		thread;
 	t_table			*data;
 }	t_philo;
@@ -85,6 +86,9 @@ int		ph_talk(t_philo *philo, int reason);
 int		ph_get_current_time(long start);
 int		ph_check_state(t_philo *philo);
 int		ph_check_death(t_philo *philo);
+
+/* ph_helper2.c */
+int		ph_rw_no_eat(t_philo *philo, int rw);
 
 /* main.c */
 void	*ph_dinner(void *arg);

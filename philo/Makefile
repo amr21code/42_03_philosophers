@@ -6,7 +6,7 @@
 #    By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 17:44:03 by anruland          #+#    #+#              #
-#    Updated: 2022/06/14 12:43:21 by anruland         ###   ########.fr        #
+#    Updated: 2022/06/17 15:21:20 by anruland         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,8 @@ SRC		=	main.c \
 			ft_bzero.c \
 			ft_strlen.c \
 			ft_printerror.c \
-			ph_helper1.c
+			ph_helper1.c \
+			ph_helper2.c
 
 all: $(NAME)
 

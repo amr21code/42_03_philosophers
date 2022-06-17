@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 14:29:15 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 14:58:50 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,10 @@ t_philo	*ph_init_philos(t_table *data)
 		philo[i].philo_no = i;
 		philo[i].forks = 0;
 		philo[i].fork_r = i;
-		philo[i].no_eat = 0;
 		philo[i].state = 0;
 		philo[i].last_eat = 0;
+		philo[i].no_eat = 0;
+		pthread_mutex_init(&philo[i].no_eat_mutex, NULL);
 		if (i > 0 && i < data->no_philo - 1)
 			philo[i].fork_l = &philo[i - 1].fork_r;
 		else if (i != 0)

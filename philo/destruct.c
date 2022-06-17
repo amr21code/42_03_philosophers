@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:14:11 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 13:15:39 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 14:59:12 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	ph_destructor(t_philo *philo, t_table *data)
 	while (i < data->no_forks)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&philo[i].no_eat_mutex);
 		i++;
 	}
 	pthread_mutex_destroy(&data->talk);
