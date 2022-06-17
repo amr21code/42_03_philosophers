@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 18:40:50 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:17:59 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ void	ph_start_eating(t_philo *philo)
 		fork1 = *(philo->fork_l);
 		fork2 = philo->fork_r;
 	}
-	if (!pthread_mutex_lock(&philo->data->forks[fork1]))
+	if (!ph_check_death(philo)
+		&& !pthread_mutex_lock(&philo->data->forks[fork1]))
 	{
 		ph_talk(philo, rfork);
-		if (!pthread_mutex_lock(&philo->data->forks[fork2]))
+		if (!ph_check_death(philo)
+			&& !pthread_mutex_lock(&philo->data->forks[fork2]))
 		{
 			ph_talk(philo, rfork);
 			time = ph_talk(philo, reat);
@@ -58,7 +60,7 @@ void	*ph_dinner(void *arg)
 	philo = (t_philo *)arg;
 	while (!philo->data->died)
 	{
-		if (ph_check_state(philo) == rthink)
+		if (!ph_check_death(philo) && ph_check_state(philo) == rthink)
 			ph_talk(philo, rthink);
 		if (ph_check_state(philo) == rsleep)
 		{
@@ -66,7 +68,7 @@ void	*ph_dinner(void *arg)
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 		}
-		if (ph_check_state(philo) == reat)
+		if (!ph_check_death(philo) && ph_check_state(philo) == reat)
 			ph_start_eating(philo);
 		if (ph_check_meal_count(philo))
 			return (0);
