@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 15:42:39 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 18:41:56 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ int	ph_talk(t_philo *philo, int reason)
 		printf("%d %d %s\n", time, philo->philo_no + 1, message);
 		if (philo->data->debug)
 		{
-			// printf("state %d\n", philo->state);
-			// printf("last eat %d\n", philo->last_eat);
+			printf("state %d\n", philo->state);
+			printf("last eat %d\n", philo->last_eat);
 			printf("died %d\n", philo->data->died);
 			printf("-----\n");
 		}

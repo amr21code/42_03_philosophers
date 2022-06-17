@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 15:40:17 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 19:03:50 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
  */
 void	ph_data_init(t_table *data, char **av, int ac)
 {
-	int	i;
+	int				i;
 
 	i = 0;
 	data->no_philo = ft_atoi(av[1]);
@@ -39,13 +39,39 @@ void	ph_data_init(t_table *data, char **av, int ac)
 		data->no_times_eat = -1;
 	if (ac == 6 && av[5][0] == '-')
 		data->debug = 1;
-	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->no_forks);
+	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) \
+		* data->no_forks);
 	while (i < data->no_forks)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
 	}
 	pthread_mutex_init(&data->talk, NULL);
+}
+
+void	ph_init_single_philo(t_philo *philo, int i, t_table *data)
+{
+	philo->data = data;
+	philo->philo_no = i;
+	philo->forks = 0;
+	philo->fork_r = i;
+	philo->state = 0;
+	philo->last_eat = 0;
+	philo->no_eat = 0;
+	pthread_mutex_init(&philo->no_eat_mutex, NULL);
+	pthread_mutex_init(&philo->last_eat_mutex, NULL);
+}
+
+void	ph_create_thread(t_philo *philo, t_table *data)
+{
+	int	i;
+
+	i = 0;
+	while (data->no_philo > 1 && i < data->no_philo)
+	{
+		pthread_create(&philo[i].thread, NULL, ph_dinner, &philo[i]);
+		i++;
+	}
 }
 
 /**
@@ -67,15 +93,7 @@ t_philo	*ph_init_philos(t_table *data)
 		philo = NULL;
 	while (data->no_philo > 1 && i < data->no_philo)
 	{
-		philo[i].data = data;
-		philo[i].philo_no = i;
-		philo[i].forks = 0;
-		philo[i].fork_r = i;
-		philo[i].state = 0;
-		philo[i].last_eat = 0;
-		philo[i].no_eat = 0;
-		pthread_mutex_init(&philo[i].no_eat_mutex, NULL);
-		pthread_mutex_init(&philo[i].last_eat_mutex, NULL);
+		ph_init_single_philo(&philo[i], i, data);
 		if (i > 0 && i < data->no_philo - 1)
 			philo[i].fork_l = &philo[i - 1].fork_r;
 		else if (i != 0)
@@ -87,12 +105,7 @@ t_philo	*ph_init_philos(t_table *data)
 			philo[0].fork_l = &philo[0].fork_r;
 		i++;
 	}
-	i = 0;
-	while (data->no_philo > 1 && i < data->no_philo)
-	{
-		pthread_create(&philo[i].thread, NULL, ph_dinner, &philo[i]);
-		i++;
-	}
+	ph_create_thread(philo, data);
 	return (philo);
 }
 

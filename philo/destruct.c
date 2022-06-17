@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:14:11 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 15:26:14 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 18:54:07 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ph_destroy_single(void *arr)
  * @param philo [t_philo *] philosophers array
  * @param data [t_table *] data struct
  */
-void	ph_destructor(t_philo *philo, t_table *data)
+char	*ph_destructor(t_philo *philo, t_table *data)
 {
 	int	i;
 
@@ -46,4 +46,5 @@ void	ph_destructor(t_philo *philo, t_table *data)
 	ph_destroy_single(data->forks);
 	ph_destroy_single(data);
 	ph_destroy_single(philo);
+	return ("Error: alloc of philo failed\n");
 }

@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 15:44:12 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 18:54:13 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int		ft_printerror(char *errormsg);
 
 /* destructor.c */
 void	ph_destroy_single(void *arr);
-void	ph_destructor(t_philo *philo, t_table *data);
+char	*ph_destructor(t_philo *philo, t_table *data);
 
 /* error.c */
 int		ph_error_check(t_table *data, int ac, char **av);
@@ -91,6 +91,7 @@ int		ph_check_death(t_philo *philo);
 /* ph_helper2.c */
 int		ph_rw_no_eat(t_philo *philo, int rw);
 int		ph_rw_last_eat(t_philo *philo, int rw, int time);
+int		ph_one_philo(t_philo *philo, t_table *data);
 
 /* main.c */
 void	*ph_dinner(void *arg);

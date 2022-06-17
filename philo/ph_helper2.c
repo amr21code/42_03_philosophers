@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:12:34 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 15:41:32 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 18:44:05 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,14 @@ int	ph_rw_last_eat(t_philo *philo, int rw, int time)
 	else if (rw == 1)
 		philo->last_eat = time;
 	pthread_mutex_unlock(&philo->last_eat_mutex);
+	return (0);
+}
+
+int	ph_one_philo(t_philo *philo, t_table *data)
+{
+	printf("2 1 is thinking\n");
+	printf("4 1 has taken a fork\n");
+	printf("%d 1 died\n", data->time_die + 2);
+	ph_destructor(philo, data);
 	return (0);
 }
