@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 19:03:50 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 19:26:26 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,8 @@
  * @param ac [int] number of arguments of the program
  * @return void
  */
-void	ph_data_init(t_table *data, char **av, int ac)
+void	ph_data_init(t_table *data, char **av, int ac, int i)
 {
-	int				i;
-
-	i = 0;
 	data->no_philo = ft_atoi(av[1]);
 	data->no_forks = ft_atoi(av[1]);
 	data->time_die = ft_atoi(av[2]);
@@ -46,6 +43,7 @@ void	ph_data_init(t_table *data, char **av, int ac)
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
 	}
+	pthread_mutex_init(&data->died_mutex, NULL);
 	pthread_mutex_init(&data->talk, NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:14:11 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 18:54:07 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 19:26:51 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ char	*ph_destructor(t_philo *philo, t_table *data)
 		i++;
 	}
 	pthread_mutex_destroy(&data->talk);
+	pthread_mutex_destroy(&data->died_mutex);
 	ph_destroy_single(data->forks);
 	ph_destroy_single(data);
 	ph_destroy_single(philo);

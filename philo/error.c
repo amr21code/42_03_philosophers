@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:13:09 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/13 10:44:51 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 19:26:30 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ph_error_check(t_table *data, int ac, char **av)
 		printf("Error invalid arguments\n");
 		return (0);
 	}
-	ph_data_init(data, av, ac);
+	ph_data_init(data, av, ac, 0);
 	if (data->time_die < 1 || data->time_eat < 1 || data->time_sleep < 1)
 	{
 		printf("Error invalid arguments\n");
