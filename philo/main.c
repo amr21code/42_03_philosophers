@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 10:17:59 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 12:19:58 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ void	ph_start_eating(t_philo *philo)
 		fork1 = *(philo->fork_l);
 		fork2 = philo->fork_r;
 	}
-	if (!ph_check_death(philo)
-		&& !pthread_mutex_lock(&philo->data->forks[fork1]))
+	if (!pthread_mutex_lock(&philo->data->forks[fork1])
+		&& !ph_check_death(philo))
 	{
 		ph_talk(philo, rfork);
-		if (!ph_check_death(philo)
-			&& !pthread_mutex_lock(&philo->data->forks[fork2]))
+		if (!pthread_mutex_lock(&philo->data->forks[fork2])
+			&& !ph_check_death(philo))
 		{
 			ph_talk(philo, rfork);
 			time = ph_talk(philo, reat);
@@ -49,6 +49,27 @@ int	ph_check_meal_count(t_philo *philo)
 		pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 		pthread_mutex_unlock(&philo->data->talk);
 		return (1);
+	}
+	return (0);
+}
+
+void	*ph_death(void *arg)
+{
+	t_philo	*philo;
+	t_table	*data;
+	int		i;
+
+	philo = (t_philo *)arg;
+	data = philo->data;
+	while (!philo->data->died)
+	{
+		i = 0;
+		while (i < data->no_philo && !philo->data->died)
+		{
+			if (ph_check_death(&philo[i]))
+				ph_talk(&philo[i], rdied);
+			i++;
+		}
 	}
 	return (0);
 }
@@ -90,7 +111,6 @@ int	main(int ac, char **av)
 	i = 0;
 	if (!ph_error_check(&data, ac, av))
 		return (-1);
-	// data.start = 0;
 	gettimeofday(&data.time, NULL);
 	data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
 	philo = ph_init_philos(&data);
@@ -107,11 +127,10 @@ int	main(int ac, char **av)
 		ph_destructor(philo, &data);
 		return (0);
 	}
-	// gettimeofday(&data.time, NULL);
-	// data.start = data.time.tv_sec * 1000 + data.time.tv_usec / 1000;
 	while (i < data.no_philo)
 	{
 		pthread_join(philo[i].thread, NULL);
+		pthread_join(data.death, NULL);
 		i++;
 	}
 	ph_destructor(philo, &data);

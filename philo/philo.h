@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 18:20:52 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:25:09 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_table
 	struct timeval	time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	talk;
+	pthread_t		death;
 	int				debug;
 }	t_table;
 
@@ -76,6 +77,7 @@ int		ph_error_check(t_table *data, int ac, char **av);
 /* init.c */
 void	ph_data_init(t_table *data, char **av, int ac);
 t_philo	*ph_init_philos(t_table *data);
+void	ph_init_death(t_table *data, t_philo *philo);
 
 /* ph_helper1.c */
 char	*ph_message(int reason, int *state);
@@ -86,5 +88,6 @@ int		ph_check_death(t_philo *philo);
 
 /* main.c */
 void	*ph_dinner(void *arg);
+void	*ph_death(void *arg);
 
 #endif

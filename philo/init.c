@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 19:10:12 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 17:39:37 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:25:11 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,9 @@ t_philo	*ph_init_philos(t_table *data)
 		i++;
 	}
 	return (philo);
+}
+
+void	ph_init_death(t_table *data, t_philo *philo)
+{
+	pthread_create(&data->death, NULL, ph_death, &philo);
 }

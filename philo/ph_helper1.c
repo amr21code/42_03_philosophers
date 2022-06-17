@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/15 18:21:10 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 12:22:05 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,18 @@ int	ph_talk(t_philo *philo, int reason)
 	char	*message;
 
 	time = ph_get_current_time(philo->data->start);
+	message = ph_message(reason, &philo->state);
 	if (!philo->data->died || reason == rdied)
 	{
-		message = ph_message(reason, &philo->state);
-		if (!philo->data->died || reason == rdied)
+		pthread_mutex_lock(&philo->data->talk);
+		printf("%d %d %s\n", time, philo->philo_no + 1, message);
+		if (philo->data->debug)
 		{
-			pthread_mutex_lock(&philo->data->talk);
-			printf("%d %d %s\n", time, philo->philo_no + 1, message);
-			if (philo->data->debug)
-			{
-				printf("state %d\n", philo->state);
-				printf("last eat %d\n", philo->last_eat);
-				printf("-----\n");
-			}
-			pthread_mutex_unlock(&philo->data->talk);
+			printf("state %d\n", philo->state);
+			printf("last eat %d\n", philo->last_eat);
+			printf("-----\n");
 		}
+		pthread_mutex_unlock(&philo->data->talk);
 	}
 	return (time);
 }
