@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:12:34 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 15:20:06 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 15:41:32 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,16 @@ int	ph_rw_no_eat(t_philo *philo, int rw)
 	else if (rw == 1)
 		philo->no_eat++;
 	pthread_mutex_unlock(&philo->no_eat_mutex);
+	return (0);
+}
+
+int	ph_rw_last_eat(t_philo *philo, int rw, int time)
+{
+	pthread_mutex_lock(&philo->last_eat_mutex);
+	if (rw == 0)
+		return (philo->last_eat);
+	else if (rw == 1)
+		philo->last_eat = time;
+	pthread_mutex_unlock(&philo->last_eat_mutex);
 	return (0);
 }

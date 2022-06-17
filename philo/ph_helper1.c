@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 12:26:39 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 15:42:39 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	ph_check_death(t_philo *philo)
 	int	time;
 
 	time = ph_get_current_time(philo->data->start);
-	if (time > philo->last_eat + philo->data->time_die)
+	if (time > ph_rw_last_eat(philo, 0, 0) + philo->data->time_die)
 	{
 		philo->data->died = philo->philo_no + 1;
 		return (1);

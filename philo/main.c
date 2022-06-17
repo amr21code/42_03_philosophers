@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 15:21:46 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 15:41:59 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	ph_start_eating(t_philo *philo)
 		{
 			ph_talk(philo, rfork);
 			time = ph_talk(philo, reat);
-			philo->last_eat = time;
+			ph_rw_last_eat(philo, 1, time);
+			// philo->last_eat = time;
 			ph_rw_no_eat(philo, 1);
 		}
 	}
