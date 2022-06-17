@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 14:13:08 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/17 14:38:06 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,10 @@ void	ph_start_eating(t_philo *philo)
 		fork1 = *(philo->fork_l);
 		fork2 = philo->fork_r;
 	}
-	if (!pthread_mutex_lock(&philo->data->forks[fork1])
-		&& !ph_check_death(philo))
+	if (!pthread_mutex_lock(&philo->data->forks[fork1]))
 	{
 		ph_talk(philo, rfork);
-		if (!pthread_mutex_lock(&philo->data->forks[fork2])
-			&& !ph_check_death(philo))
+		if (!pthread_mutex_lock(&philo->data->forks[fork2]))
 		{
 			ph_talk(philo, rfork);
 			time = ph_talk(philo, reat);
