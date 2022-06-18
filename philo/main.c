@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 18:48:11 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:58:30 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ void	ph_start_eating(t_philo *philo)
 	time = 0;
 	fork1 = philo->fork_r;
 	fork2 = *(philo->fork_l);
-	if (philo->philo_no % 2 == 0 || ph_rw_no_eat(philo, 0) > 1)
+	if (philo->philo_no % 2 == 0 || ph_rw_no_eat(philo, 0) > 0)
 	{
+		printf("philo fork switch %d\n", philo->philo_no);
 		fork1 = *(philo->fork_l);
 		fork2 = philo->fork_r;
 	}
@@ -39,7 +40,7 @@ void	ph_start_eating(t_philo *philo)
 			ph_rw_last_eat(philo, 1, time);
 			ph_rw_no_eat(philo, 1);
 			philo->forks += ph_add_rem_fork(philo, fork2);
-			printf("Philo %d began eating with fork %d and fork %d\n", philo->philo_no + 1, fork1, fork2);
+			printf("Philo %d began eat with fork %d and fork %d\n", philo->philo_no + 1, fork1, fork2);
 		}
 	}
 }
