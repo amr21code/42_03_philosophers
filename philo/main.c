@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 19:09:04 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 19:27:57 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	ph_start_eating(t_philo *philo)
 	fork2 = *(philo->fork_l);
 	if (philo->philo_no % 2 == 0 || ph_rw_no_eat(philo, 0) > 0)
 	{
-		// printf("philo fork switch %d\n", philo->philo_no);
 		fork1 = *(philo->fork_l);
 		fork2 = philo->fork_r;
 	}
@@ -31,16 +30,13 @@ void	ph_start_eating(t_philo *philo)
 	{
 		time = ph_talk(philo, rfork);
 		philo->forks += ph_add_rem_fork(philo, fork1);
-		// printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork1);
 		if (!pthread_mutex_lock(&philo->data->forks[fork2]))
 		{
 			ph_talk(philo, rfork);
-			// printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork2);
 			time = ph_talk(philo, reat);
 			ph_rw_last_eat(philo, 1, time);
 			ph_rw_no_eat(philo, 1);
 			philo->forks += ph_add_rem_fork(philo, fork2);
-			// printf("Philo %d began eat with fork %d and fork %d\n", philo->philo_no + 1, fork1, fork2);
 		}
 	}
 }
@@ -49,14 +45,7 @@ int	ph_check_meal_count(t_philo *philo)
 {
 	if (philo->data->no_times_eat >= 0
 		&& philo->no_eat > philo->data->no_times_eat)
-	{
-		// if (philo->state == rsleep)
-		// {
-		// 	pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
-		// 	pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-		// }
 		return (1);
-	}
 	return (0);
 }
 
@@ -84,7 +73,6 @@ void	*ph_death(void *arg)
 			i++;
 		}
 	}
-	// printf("Death exit (died %d, ate %d, times_eat %d)\n", data->died, times_ate, data->no_times_eat);
 	return (0);
 }
 
@@ -112,14 +100,7 @@ void	*ph_dinner(void *arg)
 			break ;
 		}
 	}
-	if (philo->forks >= 2)
-	{
-		pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
-		philo->forks -= ph_add_rem_fork(philo, philo->fork_r);
-	}
-	if (philo->forks == 1)
-		pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-	// printf("Philo %d exit\n", philo->philo_no + 1);
+	ph_unlock_mutexes(philo);
 	return (0);
 }
 

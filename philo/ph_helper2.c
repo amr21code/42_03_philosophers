@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:12:34 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 18:56:28 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 19:27:35 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,15 @@ int	ph_add_rem_fork(t_philo *philo, int fork)
 	else if (fork == *(philo->fork_l))
 		return (1);
 	return (0);
+}
+
+void	ph_unlock_mutexes(t_philo *philo)
+{
+	if (philo->forks >= 2)
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+		philo->forks -= ph_add_rem_fork(philo, philo->fork_r);
+	}
+	if (philo->forks == 1)
+		pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
 }
