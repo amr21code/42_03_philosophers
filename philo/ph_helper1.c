@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 17:38:18 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:07:31 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	ph_talk(t_philo *philo, int reason)
 			pthread_mutex_unlock(&philo->data->talk);
 		}
 		else
-			philo->state = died;
+			philo->state = rdied;
 	}
 	return (time);
 }

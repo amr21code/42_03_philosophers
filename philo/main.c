@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 17:37:29 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:08:09 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	*ph_death(void *arg)
 			i++;
 		}
 	}
-	// printf("Death exit (died %d, ate %d, times_eat %d\n", data->died, times_ate, data->no_times_eat);
+	// printf("Death exit (died %d, ate %d, times_eat %d)\n", data->died, times_ate, data->no_times_eat);
 	return (0);
 }
 
