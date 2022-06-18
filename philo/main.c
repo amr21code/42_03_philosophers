@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 18:38:45 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:48:11 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ph_start_eating(t_philo *philo)
 	time = 0;
 	fork1 = philo->fork_r;
 	fork2 = *(philo->fork_l);
-	if (philo->philo_no % 2 == 0)
+	if (philo->philo_no % 2 == 0 || ph_rw_no_eat(philo, 0) > 1)
 	{
 		fork1 = *(philo->fork_l);
 		fork2 = philo->fork_r;
@@ -92,8 +92,6 @@ void	*ph_dinner(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if (philo->philo_no == 0)
-		usleep(2000);
 	while (philo->state != rdied)
 	{
 		if (philo->state != rdied && ph_check_state(philo) == rthink)
