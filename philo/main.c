@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 18:20:14 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:30:28 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	ph_start_eating(t_philo *philo)
 		printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork1);
 		if (!pthread_mutex_lock(&philo->data->forks[fork2]))
 		{
-			printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork2);
 			ph_talk(philo, rfork);
+			printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork2);
 			time = ph_talk(philo, reat);
 			ph_rw_last_eat(philo, 1, time);
 			ph_rw_no_eat(philo, 1);
@@ -47,7 +47,7 @@ void	ph_start_eating(t_philo *philo)
 int	ph_check_meal_count(t_philo *philo)
 {
 	if (philo->data->no_times_eat >= 0
-		&& philo->no_eat >= philo->data->no_times_eat)
+		&& philo->no_eat > philo->data->no_times_eat)
 	{
 		// if (philo->state == rsleep)
 		// {
