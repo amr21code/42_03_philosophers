@@ -6,13 +6,13 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 19:22:58 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 16:30:50 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ph_start_eating(t_philo *philo)
+int	ph_start_eating(t_philo *philo)
 {
 	int	fork1;
 	int	fork2;
@@ -27,15 +27,18 @@ void	ph_start_eating(t_philo *philo)
 	}
 	if (!pthread_mutex_lock(&philo->data->forks[fork1]))
 	{
-		ph_talk(philo, rfork);
+		time = ph_talk(philo, rfork);
+		philo->forks += ph_add_rem_fork(philo, fork1);
 		if (!pthread_mutex_lock(&philo->data->forks[fork2]))
 		{
 			ph_talk(philo, rfork);
 			time = ph_talk(philo, reat);
 			ph_rw_last_eat(philo, 1, time);
 			ph_rw_no_eat(philo, 1);
+			philo->forks += ph_add_rem_fork(philo, fork2);
 		}
 	}
+	return (time);
 }
 
 int	ph_check_meal_count(t_philo *philo)
@@ -43,9 +46,11 @@ int	ph_check_meal_count(t_philo *philo)
 	if (philo->data->no_times_eat >= 0
 		&& philo->no_eat >= philo->data->no_times_eat)
 	{
-		pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
-		pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
-		pthread_mutex_unlock(&philo->data->talk);
+		// if (philo->state == rsleep)
+		// {
+		// 	pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+		// 	pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+		// }
 		return (1);
 	}
 	return (0);
@@ -61,7 +66,8 @@ void	*ph_death(void *arg)
 	times_ate = 0;
 	philo = (t_philo *)arg;
 	data = philo[0].data;
-	while (!data->died && times_ate < data->no_times_eat)
+	while (!data->died && (data->no_times_eat == -1 || (data->no_times_eat != -1
+				&& times_ate < data->no_times_eat)))
 	{
 		i = 0;
 		while (i < data->no_philo && !data->died)
@@ -74,15 +80,16 @@ void	*ph_death(void *arg)
 			i++;
 		}
 	}
+	printf("Death exit (died %d, ate %d, times_eat %d\n", data->died, times_ate, data->no_times_eat);
 	return (0);
 }
 
 void	*ph_dinner(void *arg)
 {
-	t_philo			*philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (!philo->data->died)
+	while (philo->state != rdied)
 	{
 		if (ph_check_state(philo) == rthink)
 			ph_talk(philo, rthink);
@@ -91,14 +98,24 @@ void	*ph_dinner(void *arg)
 			ph_talk(philo, rsleep);
 			pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
 			pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+			philo->forks -= 3;
 		}
 		if (ph_check_state(philo) == reat)
 			ph_start_eating(philo);
 		if (ph_check_meal_count(philo))
-			return (0);
+		{
+			philo->state = rdied;
+			break ;
+		}
 	}
-	pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
-	pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+	if (philo->forks >= 2)
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->fork_r]);
+		philo->forks -= ph_add_rem_fork(philo, philo->fork_r);
+	}
+	if (philo->forks == 1)
+		pthread_mutex_unlock(&philo->data->forks[*philo->fork_l]);
+	printf("Philo %d exit\n", philo->philo_no + 1);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:41:29 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 19:26:17 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 16:16:39 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int		ph_check_death(t_philo *philo);
 int		ph_rw_no_eat(t_philo *philo, int rw);
 int		ph_rw_last_eat(t_philo *philo, int rw, int time);
 int		ph_one_philo(t_philo *philo, t_table *data);
+int		ph_add_rem_fork(t_philo *philo, int fork);
 
 /* main.c */
 void	*ph_dinner(void *arg);

@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:12:34 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 19:09:04 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 16:16:31 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,14 @@ int	ph_one_philo(t_philo *philo, t_table *data)
 	printf("4 1 has taken a fork\n");
 	printf("%d 1 died\n", data->time_die + 2);
 	ph_destructor(philo, data);
+	return (0);
+}
+
+int	ph_add_rem_fork(t_philo *philo, int fork)
+{
+	if (fork == philo->fork_r)
+		return (2);
+	else if (fork == *(philo->fork_l))
+		return (1);
 	return (0);
 }

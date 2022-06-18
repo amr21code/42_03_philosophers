@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/17 19:29:19 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 15:51:08 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ int	ph_talk(t_philo *philo, int reason)
 	died = philo->data->died;
 	pthread_mutex_unlock(&philo->data->died_mutex);
 	time = ph_get_current_time(philo->data->start);
-	message = ph_message(reason, &philo->state);
+	if (reason != rdied)
+		message = ph_message(reason, &philo->state);
+	else
+		message = "died";
 	if (!died || reason == rdied)
 	{
 		pthread_mutex_lock(&philo->data->talk);
@@ -78,9 +81,15 @@ int	ph_get_current_time(long start)
 int	ph_check_state(t_philo *philo)
 {
 	int	time;
+	int	died;
 
+	pthread_mutex_lock(&philo->data->died_mutex);
+	died = philo->data->died;
+	pthread_mutex_unlock(&philo->data->died_mutex);
 	time = ph_get_current_time(philo->data->start);
-	if ((time > (philo->last_eat + philo->data->time_cycle)
+	if (died)
+		philo->state = rdied;
+	else if ((time > (philo->last_eat + philo->data->time_cycle)
 			&& philo->state == rsleep)
 		|| !philo->state)
 		return (rthink);
