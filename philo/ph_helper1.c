@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/14 12:09:28 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 15:51:08 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 16:49:25 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,9 @@ int	ph_get_current_time(long start)
 int	ph_check_state(t_philo *philo)
 {
 	int	time;
-	int	died;
 
-	pthread_mutex_lock(&philo->data->died_mutex);
-	died = philo->data->died;
-	pthread_mutex_unlock(&philo->data->died_mutex);
 	time = ph_get_current_time(philo->data->start);
-	if (died)
-		philo->state = rdied;
-	else if ((time > (philo->last_eat + philo->data->time_cycle)
+	if ((time > (philo->last_eat + philo->data->time_cycle)
 			&& philo->state == rsleep)
 		|| !philo->state)
 		return (rthink);
