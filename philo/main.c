@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 18:58:30 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 19:09:04 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ph_start_eating(t_philo *philo)
 	fork2 = *(philo->fork_l);
 	if (philo->philo_no % 2 == 0 || ph_rw_no_eat(philo, 0) > 0)
 	{
-		printf("philo fork switch %d\n", philo->philo_no);
+		// printf("philo fork switch %d\n", philo->philo_no);
 		fork1 = *(philo->fork_l);
 		fork2 = philo->fork_r;
 	}
@@ -31,16 +31,16 @@ void	ph_start_eating(t_philo *philo)
 	{
 		time = ph_talk(philo, rfork);
 		philo->forks += ph_add_rem_fork(philo, fork1);
-		printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork1);
+		// printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork1);
 		if (!pthread_mutex_lock(&philo->data->forks[fork2]))
 		{
 			ph_talk(philo, rfork);
-			printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork2);
+			// printf("Philo %d has taken fork %d\n", philo->philo_no + 1, fork2);
 			time = ph_talk(philo, reat);
 			ph_rw_last_eat(philo, 1, time);
 			ph_rw_no_eat(philo, 1);
 			philo->forks += ph_add_rem_fork(philo, fork2);
-			printf("Philo %d began eat with fork %d and fork %d\n", philo->philo_no + 1, fork1, fork2);
+			// printf("Philo %d began eat with fork %d and fork %d\n", philo->philo_no + 1, fork1, fork2);
 		}
 	}
 }
