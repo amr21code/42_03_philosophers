@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 18:30:28 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:38:45 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ void	*ph_dinner(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	if (philo->philo_no == 0)
+		usleep(2000);
 	while (philo->state != rdied)
 	{
 		if (philo->state != rdied && ph_check_state(philo) == rthink)
