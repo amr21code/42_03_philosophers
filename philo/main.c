@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 16:48:57 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 17:37:29 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,16 +87,10 @@ void	*ph_death(void *arg)
 void	*ph_dinner(void *arg)
 {
 	t_philo	*philo;
-	int		died;
 
 	philo = (t_philo *)arg;
 	while (philo->state != rdied)
 	{
-		pthread_mutex_lock(&philo->data->died_mutex);
-		died = philo->data->died;
-		pthread_mutex_unlock(&philo->data->died_mutex);
-		if (died)
-			philo->state = rdied;
 		if (philo->state != rdied && ph_check_state(philo) == rthink)
 			ph_talk(philo, rthink);
 		if (philo->state != rdied && ph_check_state(philo) == rsleep)
