@@ -6,18 +6,19 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 16:30:50 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/18 16:40:26 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ph_start_eating(t_philo *philo)
+void	ph_start_eating(t_philo *philo)
 {
 	int	fork1;
 	int	fork2;
 	int	time;
 
+	time = 0;
 	fork1 = philo->fork_r;
 	fork2 = *(philo->fork_l);
 	if (philo->philo_no % 2 == 0)
@@ -38,7 +39,6 @@ int	ph_start_eating(t_philo *philo)
 			philo->forks += ph_add_rem_fork(philo, fork2);
 		}
 	}
-	return (time);
 }
 
 int	ph_check_meal_count(t_philo *philo)
