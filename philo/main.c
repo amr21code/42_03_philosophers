@@ -6,7 +6,7 @@
 /*   By: anruland <anruland@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 17:43:27 by anruland          #+#    #+#             */
-/*   Updated: 2022/06/18 19:27:57 by anruland         ###   ########.fr       */
+/*   Updated: 2022/06/20 11:11:18 by anruland         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,10 +110,13 @@ int	main(int ac, char **av)
 	t_philo	*philo;
 	int		i;
 
-	i = 0;
+	i = -1;
 	data = (t_table *)malloc(sizeof(t_table));
 	if (!ph_error_check(data, ac, av))
+	{
+		ph_destroy_single(data);
 		return (-1);
+	}
 	gettimeofday(&data->time, NULL);
 	data->start = data->time.tv_sec * 1000 + data->time.tv_usec / 1000;
 	philo = ph_init_philos(data);
@@ -123,10 +126,7 @@ int	main(int ac, char **av)
 		return (ph_one_philo(philo, data));
 	ph_init_death(data, philo);
 	pthread_join(data->death, NULL);
-	while (i < data->no_philo)
-	{
+	while (++i < data->no_philo)
 		pthread_join(philo[i].thread, NULL);
-		i++;
-	}
 	ph_destructor(philo, data);
 }
